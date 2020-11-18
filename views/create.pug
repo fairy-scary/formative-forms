@@ -1,16 +1,21 @@
 extends layout.pug
 
 block content
+  if errors
+    p The following errors were found:
+    ul
+      each error in errors
+        li #{error}
   form(action="/create" method="post")
     input(type="hidden" name="_csrf" value="csrfToken")
     label(for="firstName") First Name
-    input(type="text" id="firstName" name="firstName")
+    input(type="text" id="firstName" name="firstName" value=firstName)
     label(for="lastName") Last Name
-    input(type="text" id="lastName" name="lastName")
+    input(type="text" id="lastName" name="lastName" value=lastName)
     label(for="email") Email
-    input(type="email" id="email" name="email")
+    input(type="email" id="email" name="email" value=email)
     label(for="password") Password
     input(type="password" id="password" name="password")
     label(for="confirmedPassword") Confirmed Password
     input(type="password" id="confirmedPassword" name="confirmedPassword")
-    input(type="submit" value="Submit")
+    input(type="submit" value="Create User")

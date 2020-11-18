@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000;
 app.set("view engine", "pug");
 
 app.get("/", (req, res) => {
-  res.render('index');
+  res.render('index', { users });
 });
 
 app.get('/create', csrfProtection, (req, res, next) => {
@@ -32,11 +32,12 @@ const validateData = (req, res, next) => {
   let errors = [];
   if (!firstName) {
     errors.push("Please provide a first name.");
+  }
   if (!lastName) {
     errors.push("Please provide a last name.");
   }
   if (!email) {
-    errors.push("Please provide a email.");
+    errors.push("Please provide an email.");
   }
   if (!password) {
     errors.push("Please provide a password.");
@@ -44,19 +45,18 @@ const validateData = (req, res, next) => {
   if (!confirmedPassword) {
     errors.push("placeholder")
   }
-req.errors = errors;
-next()
-  
+  req.errors = errors;
+  next()  
 }
 
-app.post('/create',validateData, (req, res) => {
+app.post('/create', validateData, (req, res) => {
   const {
     firstName,
     lastName,
     email,
   } = req.body
 
-  if (errors.length > 0) {
+  if (req.errors.length > 0) {
     res.render("create", { title: 'Create User',
     errors: req.errors, 
     firstName,
