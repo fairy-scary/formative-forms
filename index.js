@@ -5,7 +5,7 @@ const csrfProtection = csrf({ cookie: true });
 const app = express();
 
 
-
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const port = process.env.PORT || 3000;
@@ -18,6 +18,53 @@ app.get("/", (req, res) => {
 
 app.get('/create', csrfProtection, (req, res, next) => {
   res.render('create', { title: 'Create User', csrfToken: req.csrfToken() });
+});
+
+const validateData = (req, res, next) => {
+  const { 
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmedPassword,
+  } = req.body;
+
+  let errors = [];
+  if (!firstName) {
+    errors.push("Please provide a first name.");
+  if (!lastName) {
+    errors.push("Please provide a last name.");
+  }
+  if (!email) {
+    errors.push("Please provide a email.");
+  }
+  if (!password) {
+    errors.push("Please provide a password.");
+  }
+  if (!confirmedPassword) {
+    errors.push("placeholder")
+  }
+req.errors = errors;
+next()
+  
+}
+
+app.post('/create',validateData, (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+  } = req.body
+
+  if (errors.length > 0) {
+    res.render("create", { title: 'Create User',
+    errors: req.errors, 
+    firstName,
+    lastName,
+    email,
+    });
+    return;
+  }
 });
 
 const users = [
