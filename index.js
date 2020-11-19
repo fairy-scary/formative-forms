@@ -39,11 +39,11 @@ const validateData = (req, res, next) => {
   if (!email) {
     errors.push("Please provide an email.");
   }
-  if (!password) {
+  if (!password || !confirmedPassword) {
     errors.push("Please provide a password.");
   }
-  if (!confirmedPassword) {
-    errors.push("placeholder")
+  if (confirmedPassword !== password) {
+    errors.push("The provided values for the password and password confirmation fields did not match.")
   }
   req.errors = errors;
   next()  
@@ -65,6 +65,11 @@ app.post('/create', validateData, (req, res) => {
     });
     return;
   }
+  
+});
+
+app.get('/create-interesting', csrfProtection, (req, res, next) => {
+  res.render("create-interesting", { title:"create interesting user", csrfToken: req.csrfToken()});
 });
 
 const users = [
